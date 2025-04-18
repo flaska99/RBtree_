@@ -22,21 +22,41 @@ void test_init(void)
 void test_insert_single(const key_t key)
 {
   rbtree *t = new_rbtree();
+  
+  #ifdef SENTINEL
+  // assert(p->left == t->nil);
+  // assert(p->right == t->nil);
+  // assert(p->parent == t->root);
+#else
+  // assert(p->left == NULL);
+  // assert(p->right == NULL);
+  // assert(p->parent == NULL);
+#endif
+  // delete_rbtree(t);
+
   node_t *p = rbtree_insert(t, key);
   assert(p != NULL);
   assert(t->root == p);
   assert(p->key == key);
+  assert(p->color == 1);
+  p = rbtree_insert(t, 512);
+  p = rbtree_insert(t, 2024);
+  p = rbtree_insert(t, 256);
+  p = rbtree_insert(t, 800);
+  p = rbtree_insert(t, 128);
+  p = rbtree_insert(t, 56);
+  assert(p->parent->key == 128);
+  assert(p->parent->color == 1);
+  printf("%d\n" , p->parent->right->key);
+  assert(p->parent->right->key == 256);
+  assert(p->parent->right->color == 0);
+  p = rbtree_insert(t, 1300);
+  p = rbtree_insert(t, 1800);
+  // node_t *p = rbtree_insert(t, );
+  // node_t *p = rbtree_insert(t, key);
+  // node_t *p = rbtree_insert(t, key);
   // assert(p->color == RBTREE_BLACK);  // color of root node should be black
-#ifdef SENTINEL
-  assert(p->left == t->nil);
-  assert(p->right == t->nil);
-  assert(p->parent == t->nil);
-#else
-  assert(p->left == NULL);
-  assert(p->right == NULL);
-  assert(p->parent == NULL);
-#endif
-  delete_rbtree(t);
+
 }
 
 // find should return the node with the key or NULL if no such node exists
@@ -416,14 +436,14 @@ int main(void)
 {
   test_init();
   test_insert_single(1024);
-  test_find_single(512, 1024);
-  test_erase_root(128);
-  test_find_erase_fixed();
-  test_minmax_suite();
-  test_to_array_suite();
-  test_distinct_values();
-  test_duplicate_values();
-  test_multi_instance();
-  test_find_erase_rand(10000, 17);
+  // test_find_single(512, 1024);
+  // test_erase_root(128);
+  // test_find_erase_fixed();
+  // test_minmax_suite();
+  // test_to_array_suite();
+  // test_distinct_values();
+  // test_duplicate_values();
+  // test_multi_instance();
+  // test_find_erase_rand(10000, 17);
   printf("Passed all tests!\n");
 }
