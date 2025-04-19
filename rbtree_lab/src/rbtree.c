@@ -72,7 +72,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
   }
 
   void rb_insert_fixup(rbtree *t, node_t *z){
-    while(z != t->root && z->parent->color == RBTREE_RED){
+    while((z != t->root) && (z->parent->color == RBTREE_RED)){
       int dir = is_direction(z->parent);  // 1이면 왼쪽, 0이면 오른쪽
       node_t *uncle = dir ? z->parent->parent->right : z->parent->parent->left;
   
@@ -81,8 +81,10 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
         uncle->color = RBTREE_BLACK;
         z->parent->parent->color = RBTREE_RED;
         z = z->parent->parent;
-      } else {
-        if ((dir && z == z->parent->right) || (!dir && z == z->parent->left)) {  // Case 2
+      } 
+      
+      else {
+        if ((dir && (z == z->parent->right)) || (!dir && (z == z->parent->left))) {  // Case 2
           z = z->parent;
           dir ? left_rotate(t, z) : right_rotate(t, z);
         }
@@ -103,7 +105,7 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
 
 
 node_t *find_uncle(const rbtree *t, const node_t *z){
-  if (z->parent == t->nil || z->parent->parent == t->nil)
+  if ((z->parent == t->nil) || (z->parent->parent == t->nil))
     return t->nil;
 
   node_t *grand = z->parent->parent;

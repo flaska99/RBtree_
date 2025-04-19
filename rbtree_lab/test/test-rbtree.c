@@ -22,18 +22,6 @@ void test_init(void)
 void test_insert_single(const key_t key)
 {
   rbtree *t = new_rbtree();
-  
-  #ifdef SENTINEL
-  // assert(p->left == t->nil);
-  // assert(p->right == t->nil);
-  // assert(p->parent == t->root);
-#else
-  // assert(p->left == NULL);
-  // assert(p->right == NULL);
-  // assert(p->parent == NULL);
-#endif
-  // delete_rbtree(t);
-
   node_t *p = rbtree_insert(t, key);
   assert(p != NULL);
   assert(t->root == p);
@@ -50,14 +38,37 @@ void test_insert_single(const key_t key)
   printf("%d\n" , p->parent->right->key);
   assert(p->parent->right->key == 256);
   assert(p->parent->right->color == 0);
+  p = rbtree_insert(t, 1500);
+  p = rbtree_insert(t, 3000);
   p = rbtree_insert(t, 1300);
   p = rbtree_insert(t, 1800);
-  // node_t *p = rbtree_insert(t, );
+  p = rbtree_insert(t, 1200);
   // node_t *p = rbtree_insert(t, key);
   // node_t *p = rbtree_insert(t, key);
+  assert(p->parent->parent->color==0);
+  assert(p->parent->parent -> key == 1500);
+  assert(p->parent->key==1300);
+  assert(p->parent->color == 1);
+  p=rbtree_insert(t, 1250);
+  assert(p->parent->key==1500);
+  assert(p->parent->color==0);
+  assert(p->left->key==1200);
+  assert(p->left->color==0);
+  assert(p->right->key==1300);
+  assert(p->right->color==0);
   // assert(p->color == RBTREE_BLACK);  // color of root node should be black
-
+#ifdef SENTINEL
+  // assert(p->left == t->nil);
+  // assert(p->right == t->nil);
+  // assert(p->parent == t->root);
+#else
+  // assert(p->left == NULL);
+  // assert(p->right == NULL);
+  // assert(p->parent == NULL);
+#endif
+  // delete_rbtree(t);
 }
+
 
 // find should return the node with the key or NULL if no such node exists
 void test_find_single(const key_t key, const key_t wrong_key)
