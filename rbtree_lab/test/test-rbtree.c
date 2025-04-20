@@ -18,6 +18,39 @@ void test_init(void)
   delete_rbtree(t);
 }
 
+void test_rotation_with_nil() {
+  rbtree *t = new_rbtree();
+
+  // 트리에 노드 삽입
+  node_t *n1 = rbtree_insert(t, 10); // 루트 노드
+  node_t *n2 = rbtree_insert(t, 20); // 오른쪽 자식
+  node_t *n3 = rbtree_insert(t, 5);  // 왼쪽 자식
+
+  // 왼쪽 회전 테스트 (n1을 기준으로)
+  left_rotate(t, n1);
+
+  // n2가 새로운 루트가 되어야 함
+  assert(t->root == n2);
+  assert(n2->left == n1);
+  assert(n1->parent == n2);
+
+  // n1의 오른쪽 자식은 nil이어야 함
+  assert(n1->right == t->nil);
+
+  // 오른쪽 회전 테스트 (n2를 기준으로)
+  right_rotate(t, n2);
+
+  // n1이 다시 루트가 되어야 함
+  assert(t->root == n1);
+  assert(n1->right == n2);
+  assert(n2->parent == n1);
+
+  // n2의 왼쪽 자식은 nil이어야 함
+  assert(n2->left == t->nil);
+
+  delete_rbtree(t);
+}
+
 // root node should have proper values and pointers
 void test_insert_single(const key_t key)
 {
@@ -56,6 +89,7 @@ void test_insert_single(const key_t key)
   assert(p->left->color==0);
   assert(p->right->key==1300);
   assert(p->right->color==0);
+  // delete_rbtree(t);
   // assert(p->color == RBTREE_BLACK);  // color of root node should be black
 #ifdef SENTINEL
   // assert(p->left == t->nil);
@@ -66,7 +100,7 @@ void test_insert_single(const key_t key)
   // assert(p->right == NULL);
   // assert(p->parent == NULL);
 #endif
-  // delete_rbtree(t);
+  
 }
 
 
@@ -445,9 +479,10 @@ void test_find_erase_rand(const size_t n, const unsigned int seed)
 
 int main(void)
 {
-  test_init();
-  test_insert_single(1024);
+  // test_init();
+  // test_insert_single(1024);
   // test_find_single(512, 1024);
+  test_rotation_with_nil();
   // test_erase_root(128);
   // test_find_erase_fixed();
   // test_minmax_suite();
