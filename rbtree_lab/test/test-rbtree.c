@@ -18,39 +18,6 @@ void test_init(void)
   delete_rbtree(t);
 }
 
-void test_rotation_with_nil() {
-  rbtree *t = new_rbtree();
-
-  // 트리에 노드 삽입
-  node_t *n1 = rbtree_insert(t, 10); // 루트 노드
-  node_t *n2 = rbtree_insert(t, 20); // 오른쪽 자식
-  node_t *n3 = rbtree_insert(t, 5);  // 왼쪽 자식
-
-  // 왼쪽 회전 테스트 (n1을 기준으로)
-  left_rotate(t, n1);
-
-  // n2가 새로운 루트가 되어야 함
-  assert(t->root == n2);
-  assert(n2->left == n1);
-  assert(n1->parent == n2);
-
-  // n1의 오른쪽 자식은 nil이어야 함
-  assert(n1->right == t->nil);
-
-  // 오른쪽 회전 테스트 (n2를 기준으로)
-  right_rotate(t, n2);
-
-  // n1이 다시 루트가 되어야 함
-  assert(t->root == n1);
-  assert(n1->right == n2);
-  assert(n2->parent == n1);
-
-  // n2의 왼쪽 자식은 nil이어야 함
-  assert(n2->left == t->nil);
-
-  delete_rbtree(t);
-}
-
 // root node should have proper values and pointers
 void test_insert_single(const key_t key)
 {
@@ -89,7 +56,7 @@ void test_insert_single(const key_t key)
   assert(p->left->color==0);
   assert(p->right->key==1300);
   assert(p->right->color==0);
-  // delete_rbtree(t);
+  delete_rbtree(t);
   // assert(p->color == RBTREE_BLACK);  // color of root node should be black
 #ifdef SENTINEL
   // assert(p->left == t->nil);
@@ -212,11 +179,10 @@ void test_to_array(rbtree *t, const key_t *arr, const size_t n)
 
   insert_arr(t, arr, n);
   qsort((void *)arr, n, sizeof(key_t), comp);
-
+  
   key_t *res = calloc(n, sizeof(key_t));
   rbtree_to_array(t, res, n);
-  for (int i = 0; i < n; i++)
-  {
+  for (int i = 0; i < n; i++){
     assert(arr[i] == res[i]);
   }
   free(res);
@@ -479,17 +445,16 @@ void test_find_erase_rand(const size_t n, const unsigned int seed)
 
 int main(void)
 {
-  // test_init();
-  // test_insert_single(1024);
-  // test_find_single(512, 1024);
-  test_rotation_with_nil();
-  // test_erase_root(128);
-  // test_find_erase_fixed();
-  // test_minmax_suite();
-  // test_to_array_suite();
-  // test_distinct_values();
-  // test_duplicate_values();
-  // test_multi_instance();
-  // test_find_erase_rand(10000, 17);
+  test_init();
+  test_insert_single(1024);
+  test_find_single(512, 1024);
+  test_erase_root(128);
+  test_find_erase_fixed();
+  test_minmax_suite();
+  test_to_array_suite();
+  test_distinct_values();
+  test_duplicate_values();
+  test_multi_instance();
+  test_find_erase_rand(10000, 17);
   printf("Passed all tests!\n");
 }
